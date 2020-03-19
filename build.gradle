@@ -7,23 +7,14 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
-        classpath 'com.jakewharton.confundus:confundus-gradle:1.0.0'
-    }
 }
 
-//plugins {
-//    id 'java'
-//    id 'org.jetbrains.kotlin.jvm' version '1.3.70'
-//    id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.70'
-//}
-apply plugin: 'java'
-apply plugin: 'kotlin'
-apply plugin: 'kotlinx-serialization'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.jakewharton.confundus'
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.70'
+    id 'org.jetbrains.kotlin.kapt' version '1.3.70'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.70'
+}
 
 group 'org.example'
 version '1.0-SNAPSHOT'
@@ -40,7 +31,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "io.ktor:ktor-client-apache:$ktor_version"
-    implementation("io.ktor:ktor-client-serialization-jvm:$ktor_version")
+    implementation "io.ktor:ktor-client-serialization-jvm:$ktor_version"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 

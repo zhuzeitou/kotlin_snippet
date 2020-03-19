@@ -1,11 +1,10 @@
-import com.jakewharton.confundus.unsafeCast
 import java.io.Closeable
 import java.io.IOException
 
 class Closeables(private val closeables: List<Closeable?>) : Closeable {
 
     override fun close() {
-        closeables.fold(null.unsafeCast<IOException?>(), { e, closable ->
+        closeables.fold(null as IOException?, { e, closable ->
             tryCatch {
                 closable?.close()
             } ?.let {
