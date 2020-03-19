@@ -3,7 +3,6 @@ import java.io.Closeable
 import java.io.IOException
 
 class Closeables(private val closeables: List<Closeable?>) : Closeable {
-    constructor(vararg closeables: Closeable?) : this(closeables.toList())
 
     override fun close() {
         closeables.fold(null.unsafeCast<IOException?>(), { e, closable ->
@@ -26,3 +25,5 @@ class Closeables(private val closeables: List<Closeable?>) : Closeable {
         }
     }
 }
+
+fun closeablesOf(vararg closeables: Closeable) = Closeables(closeables.toList())

@@ -28,7 +28,7 @@ fun main() {
             }
         }
 
-        Closeables(client).use {
+        closeablesOf(client).use {
             val body = client.post<HttpBin<Form>> {
                 url("http://httpbin.org/post")
                 body = FormDataContent(Parameters.build {

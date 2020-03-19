@@ -2,18 +2,18 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.modules.SerializersModule
-import java.sql.Timestamp
 
-val context = SerializersModule {
+private val context = SerializersModule {
     contextual(Date::class, DateSerializer)
+    contextual(Timestamp::class, TimeStampSerializer)
 }
 
 val jsonObject = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true), context)
 
-@OptIn(ImplicitReflectionSerializer::class, UnstableDefault::class)
+@OptIn(ImplicitReflectionSerializer::class)
 inline fun <reified T> T.toJson(): String = jsonObject.stringify(serializer(), this)
 
-@OptIn(ImplicitReflectionSerializer::class, UnstableDefault::class)
+@OptIn(ImplicitReflectionSerializer::class)
 inline fun <reified T> String.parseJson(): T = jsonObject.parse(serializer(), this)
 
 typealias Date = @ContextualSerialization java.util.Date
