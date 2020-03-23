@@ -7,7 +7,7 @@ class Closeables(private val closeables: List<Closeable?>) : Closeable, List<Clo
             try {
                 closable?.close()
                 e
-            } catch (ex: IOException) {
+            } catch (ex: Exception) {
                 (e ?: IOException()).apply { addSuppressed(ex) }
             }
         })?.apply { throw this }
