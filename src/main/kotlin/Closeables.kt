@@ -1,28 +1,17 @@
 import java.io.Closeable
 import java.io.IOException
 
-class Closeables(private val closeables: List<Closeable?>) : Closeable {
-
+class Closeables(private val closeables: List<Closeable?>) : Closeable, List<Closeable?> by closeables {
     override fun close() {
         closeables.fold(null as IOException?, { e, closable ->
-            tryCatch {
+            try {
                 closable?.close()
-            } ?.let {
-                (e ?: IOException()).apply {
-                    addSuppressed(it)
-                }
-            } ?: e
+                e
+            } catch (ex: IOException) {
+                (e ?: IOException()).apply { addSuppressed(ex) }
+            }
         })?.apply { throw this }
-    }
-
-    private inline fun tryCatch(block: () -> Unit) : IOException? {
-        return try {
-            block()
-            null
-        } catch (e: IOException) {
-            e
-        }
     }
 }
 
-fun closeablesOf(vararg closeables: Closeable) = Closeables(closeables.toList())
+fun closeablesOf(vararg closeables: Closeable?) = Closeables(closeables.toList())
