@@ -4,8 +4,8 @@ private val classLoader by lazy { object {}.javaClass.classLoader }
 
 fun String.asResource() = classLoader.getResource(this)
 
-fun String.asResourceBytes() = asResource().readBytes()
+fun String.asResourceBytes() = asResource()?.readBytes()
 
-fun String.asResourceText(charset: Charset = Charsets.UTF_8) = asResourceBytes().toString(charset)
+fun String.asResourceText(charset: Charset = Charsets.UTF_8) = asResourceBytes()?.toString(charset)
 
 fun String.asResourceStream() = classLoader.getResourceAsStream(this)
