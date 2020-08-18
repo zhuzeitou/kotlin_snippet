@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
 
 val jsonObject = Json {
     serializersModule = SerializersModule {
-        contextual(Date::class, DateSerializer2)
+        contextual(Date::class, FormatDateSerializer)
         contextual(Timestamp::class, TimeStampSerializer)
     }
     ignoreUnknownKeys = true
@@ -24,11 +24,8 @@ inline fun <reified T> T.toJson(): String = jsonObject.encodeToString(this)
 
 inline fun <reified T> String.parseJson(): T = jsonObject.decodeFromString(this)
 
-typealias Date = @Contextual java.util.Date
-typealias LongDate = @Serializable(with = DateSerializer::class) java.util.Date
-
-@Serializer(forClass = Date::class)
-object DateSerializer : KSerializer<Date> {
+typealias LongDate = @Serializable(with = LongDateSerializer::class) java.util.Date
+object LongDateSerializer : KSerializer<Date> {
     override val descriptor = PrimitiveSerialDescriptor("Date", PrimitiveKind.LONG)
 
     override fun deserialize(decoder: Decoder) = Date(decoder.decodeLong())
@@ -36,8 +33,8 @@ object DateSerializer : KSerializer<Date> {
     override fun serialize(encoder: Encoder, value: Date) = encoder.encodeLong(value.time)
 }
 
-@Serializer(forClass = java.util.Date::class)
-object DateSerializer2 : KSerializer<java.util.Date> {
+typealias Date = @Contextual java.util.Date
+object FormatDateSerializer : KSerializer<java.util.Date> {
     override val descriptor = PrimitiveSerialDescriptor("Date", PrimitiveKind.STRING)
 
     private val df: ThreadLocal<DateFormat> = object : ThreadLocal<DateFormat>() {
@@ -57,8 +54,6 @@ object DateSerializer2 : KSerializer<java.util.Date> {
 }
 
 typealias Timestamp = @Serializable(with = TimeStampSerializer::class) java.sql.Timestamp
-
-@Serializer(forClass = Timestamp::class)
 object TimeStampSerializer : KSerializer<Timestamp> {
     override val descriptor = PrimitiveSerialDescriptor("Timestamp", PrimitiveKind.LONG)
 
