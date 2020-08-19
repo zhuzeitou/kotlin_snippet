@@ -15,29 +15,48 @@ data class Form(val a: Int, val b: Int)
 data class HttpBin<T>(val form: T)
 
 @OptIn(ExperimentalTime::class)
+inline fun <reified T> parseResource(name: String): T? {
+    return try {
+        name.asResourceText()?.let { str ->
+            val mark = TimeSource.Monotonic.markNow()
+            val result = str.parseJson<T>()
+            println("parseResource ${name} ${mark.elapsedNow()}")
+            result
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+@OptIn(ExperimentalTime::class)
 fun main() {
-    runBlocking {
-        val client = OkHttpClient()
-        val request = okhttp3.Request.Builder()
-            .url("http://httpbin.org/post")
-            .post(FormBody.Builder()
-                .add("a", "1")
-                .add("b", "12345")
-                .build())
-            .header("isp", URLEncoder.encode("你好", "utf-8"))
-            .build()
-        client.newCall(request).execute().use { response ->
-            if (response.isSuccessful) {
-                response.body?.let { body ->
-                    println(body.string())
-                }
+    val client = OkHttpClient()
+    val request = okhttp3.Request.Builder()
+        .url("http://httpbin.org/post")
+        .post(FormBody.Builder()
+            .add("a", "1")
+            .add("b", "12345")
+            .build())
+        .header("isp", URLEncoder.encode("你好", "utf-8"))
+        .build()
+    client.newCall(request).execute().use { response ->
+        if (response.isSuccessful) {
+            response.body?.let { body ->
+                println(body.string())
             }
         }
-
-        val mark = TimeSource.Monotonic.markNow()
-        test()
-        println(mark.elapsedNow())
     }
+
+    val mark = TimeSource.Monotonic.markNow()
+    test()
+    println("test ${mark.elapsedNow()}")
+
+    val users = parseResource<List<UserProfile>>("user.json")
+    val citys = parseResource<List<CityInfo>>("citys.json")
+    val repos = parseResource<List<Repo>>("repos.json")
+    val requests = parseResource<List<Request>>("request.json")
+    println(citys)
 }
 
 @Serializable

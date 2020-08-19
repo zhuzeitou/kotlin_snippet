@@ -6,6 +6,6 @@ fun String.asResource() = classLoader.getResource(this)
 
 fun String.asResourceBytes() = asResource()?.readBytes()
 
-fun String.asResourceText(charset: Charset = Charsets.UTF_8) = asResourceBytes()?.toString(charset)
+fun String.asResourceText(charset: Charset = Charsets.UTF_8) = asResource()?.readText(charset)
 
 fun String.asResourceStream() = classLoader.getResourceAsStream(this)
